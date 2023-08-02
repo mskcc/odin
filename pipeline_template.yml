@@ -1,0 +1,5 @@
+prefix: mskcc
+skip:
+- ci
+- github_badges
+- igenomes
