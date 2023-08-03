@@ -12,33 +12,28 @@ workflow INPUT_CHECK {
     SAMPLESHEET_CHECK ( samplesheet )
         .csv
         .splitCsv ( header:true, sep:',' )
-        .map { create_fastq_channel(it) }
-        .set { reads }
+        .map { create_bam_channel(it) }
+        .set { bams }
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
+    bams                                     // channel: [ val(meta), [ bams ] ]
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
-// Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def create_fastq_channel(LinkedHashMap row) {
+// Function to get list of [ meta, [ tumor_bam, normal_bam ] ]
+def create_bam_channel(LinkedHashMap row) {
     // create meta map
     def meta = [:]
-    meta.id         = row.sample
-    meta.single_end = row.single_end.toBoolean()
+    meta.id         = row.tumor_name + "_" + row.normal_name
 
     // add path(s) of the fastq file(s) to the meta map
     def fastq_meta = []
-    if (!file(row.fastq_1).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
+    if (!file(row.tumor_bam).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Tumor BAM file does not exist!\n${row.tumor_bam}"
     }
-    if (meta.single_end) {
-        fastq_meta = [ meta, [ file(row.fastq_1) ] ]
-    } else {
-        if (!file(row.fastq_2).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
-        }
-        fastq_meta = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+    if (!file(row.normal_bam).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Normal BAM file does not exist!\n${row.normal_bam}"
     }
-    return fastq_meta
+    bam_meta = [ meta, [ file(row.tumor_bam), file(row.normal_bam) ] ]
+    return bam_meta
 }
