@@ -25,6 +25,7 @@ def create_bam_channel(LinkedHashMap row) {
     // create meta map
     def meta = [:]
     meta.id         = row.tumor_name + "_" + row.normal_name
+    meta.baitset    = row.baitset
 
     // add path(s) of the bam files to the meta map
     def bam_meta = []

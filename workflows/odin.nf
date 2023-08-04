@@ -31,6 +31,7 @@ WorkflowOdin.initialise(params, log)
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { CALL_VARIANTS } from '../subworkflows/local/varaint-calling/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -65,9 +66,11 @@ workflow ODIN {
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
     // ! There is currently no tooling to help you write a sample sheet schema
 
-    //
-    // MODULE: Run FastQC
-    //
+    // Run variant callers
+    CALL_VARIANTS (
+        INPUT_CHECK.bams
+    )
+    ch_versions = ch_versions.mix(CALL_VARIANTS.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
