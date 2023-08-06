@@ -20,21 +20,22 @@ workflow INPUT_CHECK {
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
-// Function to get list of [ meta, [ tumor_bam, normal_bam ] ]
+// Function to get list of [ meta, [ tumorBam, normalBam, assay, normalType ] ]
 def create_bam_channel(LinkedHashMap row) {
     // create meta map
     def meta = [:]
-    meta.id         = row.tumor_name + "_" + row.normal_name
-    meta.baitset    = row.baitset
+    meta.id         = row.pairId
+    meta.assay      = row.assay
+    meta.normalType = row.normalType
 
     // add path(s) of the bam files to the meta map
     def bam_meta = []
-    if (!file(row.tumor_bam).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Tumor BAM file does not exist!\n${row.tumor_bam}"
+    if (!file(row.tumorBam).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Tumor BAM file does not exist!\n${row.tumorBam}"
     }
-    if (!file(row.normal_bam).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Normal BAM file does not exist!\n${row.normal_bam}"
+    if (!file(row.normalBam).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> Normal BAM file does not exist!\n${row.normalBam}"
     }
-    bam_meta = [ meta, [ file(row.tumor_bam), file(row.normal_bam) ] ]
-    return bam_meta
+    bams = [ meta, [ file(row.tumorBam), file(row.normalBam) ] ]
+    return bams
 }
