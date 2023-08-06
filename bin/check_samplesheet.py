@@ -30,11 +30,11 @@ class RowChecker:
 
     def __init__(
         self,
-        tumor_name="tumor_name",
-        tumor_bam="tumor_bam",
-        normal_name="normal_name",
-        normal_bam="normal_bam",
-        baitset="baitset",
+        sampleId="sampleId",
+        tumorBam="tumorBam",
+        normalBam="normalBam",
+        assay="assay",
+        normalType="normalType",
         **kwargs,
     ):
         """
@@ -45,11 +45,11 @@ class RowChecker:
 
         """
         super().__init__(**kwargs)
-        self._tumor_name=tumor_name
-        self._tumor_bam=tumor_bam
-        self._normal_name=normal_name
-        self._normal_bam=normal_bam
-        self._baitset=baitset
+        self._sampleId=sampleId
+        self._tumorBam=tumorBam
+        self._normalBam=normalBam
+        self._assay=assay
+        self._normalType=normalType
         self._seen = set()
         self.modified = []
 
@@ -64,26 +64,26 @@ class RowChecker:
         """
         self._validate_names(row)
         self._validate_bams(row)
-        self._validate_baitset(row)
-        self._seen.add((row[self._tumor_name], row[self._normal_name]))
+        self._validate_normalType(row)
+        self._seen.add((row[self._sampleId]))
         self.modified.append(row)
 
     def _validate_names(self, row):
         """Assert that the sample names exist"""
-        if len(row[self._tumor_name]) <= 0 or len(row[self._normal_name]) <= 0:
-            raise AssertionError("Sample name is required.")
+        if len(row[self._sampleId]) <= 0:
+            raise AssertionError("sampleId is required.")
 
     def _validate_bams(self, row):
         """Assert that the first FASTQ entry is non-empty and has the right format."""
-        if len(row[self._tumor_bam]) <= 0  or len(row[self._normal_bam]) <= 0:
+        if len(row[self._tumorBam]) <= 0  or len(row[self._normalBam]) <= 0:
             raise AssertionError("Both bam files are required.")
-        self._validate_bam_format(row[self._tumor_bam])
-        self._validate_bam_format(row[self._normal_bam])
+        self._validate_bam_format(row[self._tumorBam])
+        self._validate_bam_format(row[self._normalBam])
 
-    def _validate_baitset(self, row):
+    def _validate_normalType(self, row):
         """Assert that bait set exists."""
-        if len(row[self._baitset]) <= 0:
-            raise AssertionError("Bait Set is required.")
+        if len(row[self._normalType]) <= 0:
+            raise AssertionError("normalType is required.")
 
     def _validate_bam_format(self, filename):
         """Assert that a given filename has one of the expected FASTQ extensions."""
@@ -142,11 +142,11 @@ def check_samplesheet(file_in, file_out):
         This function checks that the samplesheet follows the following structure,
         see also the `viral recon samplesheet`_::
 
-            tumor_name,tumor_bam,normal_name,normal_bam,baitset
+            sampleId,tumorBam,normalBam,assay,normalType
             SAMPLE_TUMOR,BAM_TUMOR,SAMPLE_NORMAL,BAM_NORMAL,BAITS
 
     """
-    required_columns = {"tumor_name","tumor_bam","normal_name","normal_bam","baitset"}
+    required_columns = {"sampleId","tumorBam","normalBam","assay","normalType"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
