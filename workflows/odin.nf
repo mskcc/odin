@@ -72,6 +72,8 @@ workflow ODIN {
     ch_fasta_ref = Channel.of([ "reference_genome", file(params.genome_file) ])
     ch_fasta_fai_ref = Channel.of([ "reference_genome_index", file(params.genome_index) ])
     ch_bedfile = Channel.of([ file(params.bed_file) ])
+    ch_dbsnp = Channel.of([ "dbsnp", file(params.dbsnp) ])
+    ch_cosmic = Channel.of([ "cosmic", file(params.cosmic) ])
 
     ch_fasta_ref.view()
  
@@ -80,7 +82,9 @@ workflow ODIN {
         INPUT_CHECK.out.bams,
         ch_bedfile,
         ch_fasta_ref,
-        ch_fasta_fai_ref
+        ch_fasta_fai_ref,
+        ch_dbsnp,
+        ch_cosmic
     )
     ch_versions = ch_versions.mix(CALL_VARIANTS.out.versions)
 

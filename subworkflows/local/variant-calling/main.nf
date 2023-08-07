@@ -10,8 +10,8 @@ workflow CALL_VARIANTS {
     ch_bedfile        // bedfile path
     ch_fasta_ref      // fasta path
     ch_fasta_fai_ref  // fasta_fai path
-//    ch_dbsnp
-//    ch_cosmic
+    ch_dbsnp          // dbsnp path
+    ch_cosmic         // cosmic path
 
 
     main:
@@ -30,8 +30,8 @@ workflow CALL_VARIANTS {
         vc_input,
         ch_fasta_ref,
         ch_fasta_fai_ref,
-        dbsnp,
-        cosmic
+        ch_dbsnp,
+        ch_cosmic
     )
     ch_versions = ch_versions.mix(MUTECT.out.versions)
 
