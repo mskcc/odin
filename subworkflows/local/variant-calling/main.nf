@@ -1,5 +1,5 @@
 
-//include { MUTECT } from '../../modules/local/mutect/main'
+include { MUTECT } from '../../modules/local/mutect/main'
 include { VARDICTJAVA } from '../../../modules/local/vardictjava/main'
 
 
@@ -26,10 +26,14 @@ workflow CALL_VARIANTS {
     ch_fasta_ref.view()
     ch_fasta_fai_ref.view()
 
-//    MUTECT (
-//
-//    )
-//    ch_versions = ch_versions.mix(MUTECT.out.versions)
+    MUTECT (
+        vc_input,
+        ch_fasta_ref,
+        ch_fasta_fai_ref,
+        dbsnp,
+        cosmic
+    )
+    ch_versions = ch_versions.mix(MUTECT.out.versions)
 
     VARDICTJAVA (
         vc_input,
@@ -39,6 +43,9 @@ workflow CALL_VARIANTS {
     ch_versions = ch_versions.mix(VARDICTJAVA.out.versions)
 
     emit:
+    vardict_vcf = VARDICTJAVA.out.vcf
+    mutect_vcf = MUTECT.out.vcf
+    mutect_stats = MUTECT.out.stats
     versions = ch_versions
 
 }
