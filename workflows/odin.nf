@@ -31,7 +31,7 @@ WorkflowOdin.initialise(params, log)
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-//include { CALL_VARIANTS } from '../subworkflows/local/varaint-calling/main'
+include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,18 +62,27 @@ workflow ODIN {
         file(params.input)
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-
-    INPUT_CHECK.out.bams.view()
     
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
     // ! There is currently no tooling to help you write a sample sheet schema
 
     // Run variant callers
-//    CALL_VARIANTS (
-//        INPUT_CHECK.bams
-//    )
-//    ch_versions = ch_versions.mix(CALL_VARIANTS.out.versions)
+    // TODO: Going to assume .bai for each bam is created, but in the future add something that creates index if it doesn't exist
+    ch_fasta_ref = Channel.of([ "reference_genome", file(params.genome_file) ])
+    ch_fasta_fai_ref = Channel.of([ "reference_genome_index", file(params.genome_index) ])
+    ch_bedfile = Channel.of([ file(params.bed_file) ])
+
+    ch_fasta_ref.view()
+ 
+    
+    CALL_VARIANTS (
+        INPUT_CHECK.out.bams,
+        ch_bedfile,
+        ch_fasta_ref,
+        ch_fasta_fai_ref
+    )
+    ch_versions = ch_versions.mix(CALL_VARIANTS.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

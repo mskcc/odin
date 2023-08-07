@@ -2,10 +2,10 @@ process VARDICTJAVA {
     tag "$meta.id"
     label 'process_high'
 
-    conda "bioconda::vardict-java=1.8.3"
+    conda "bioconda::vardict-java=1.5.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/vardict-java:1.8.3--hdfd78af_0':
-        'biocontainers/vardict-java:1.8.3--hdfd78af_0' }"
+        'docker://mskcc/roslin-variant-vardict:1.5.1':
+        'docker.io/mskcc/roslin-variant-vardict:1.5.1' }"
 
     input:
     tuple val(meta), path(bams), path(bais), path(bed)
@@ -24,13 +24,13 @@ process VARDICTJAVA {
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
-    def somatic = bams instanceof ArrayList && bams.size() == 2 ? true : false
-    def input = somatic ? "-b \"${bams[0]}|${bams[1]}\"" : "-b ${bams}"
-    def filter = somatic ? "testsomatic.R" : "teststrandbias.R"
-    def convert_to_vcf = somatic ? "var2vcf_paired.pl" : "var2vcf_valid.pl"
+    def somatic = true
+    def input = "-b ${bams}"
+    def filter = "/usr/bin/vardict/testsomatic.R" 
+    def convert_to_vcf = "/usr/bin/vardict/var2vcf_paired.pl"
     """
     export JAVA_OPTS='"-Xms${task.memory.toMega()/4}m" "-Xmx${task.memory.toGiga()}g" "-Dsamjdk.reference_fasta=${fasta}"'
-    vardict-java \\
+    /usr/bin/vardict/bin/VarDict \\
         ${args} \\
         ${input} \\
         -th ${task.cpus} \\
@@ -43,8 +43,7 @@ process VARDICTJAVA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        vardict-java: \$( realpath \$( command -v vardict-java ) | sed 's/.*java-//;s/-.*//' )
-        var2vcf_valid.pl: \$( var2vcf_valid.pl -h | sed '2!d;s/.* //' )
+        vardict: 1.5.1
     END_VERSIONS
     """
 
