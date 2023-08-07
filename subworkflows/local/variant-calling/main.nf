@@ -1,5 +1,5 @@
 
-include { MUTECT } from '../../modules/local/mutect/main'
+include { MUTECT } from '../../../modules/local/mutect/main'
 include { VARDICTJAVA } from '../../../modules/local/vardictjava/main'
 
 
