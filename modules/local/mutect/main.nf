@@ -29,8 +29,8 @@ process MUTECT {
         -Xmx${task.memory.toGiga()}g \\
         -XX:-UseGCOverheadLimit \\
         -Djava.io.tmpdir=./tmp \\
-        --input_file_tumor ${bams[0]} \\
-        --input_file_normal ${bams[1]} \\
+        --input_file_tumor ${input[0]} \\
+        --input_file_normal ${input[1]} \\
         --intervals ${intervals} \\
         ${args} \\
         --vcf ${prefix}.mutect.vcf \\
