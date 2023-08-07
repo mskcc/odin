@@ -25,7 +25,7 @@ process VARDICTJAVA {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     def somatic = true
-    def input = "-b ${bams}"
+    def input = "-b \"${bams[0]}|${bams[1]}\""
     def filter = "/usr/bin/vardict/testsomatic.R" 
     def convert_to_vcf = "/usr/bin/vardict/var2vcf_paired.pl"
     """
