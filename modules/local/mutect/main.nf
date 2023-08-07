@@ -29,6 +29,9 @@ process MUTECT {
         -XX:-UseGCOverheadLimit \\
         -Djava.io.tmpdir=./tmp \\
         -jar /usr/bin/mutect.jar \\
+        --reference_sequence ${fasta} \\
+        --dbsnp ${dbsnp} \\
+        --cosmic ${cosmic} \\
         --input_file:tumor ${input[0]} \\
         --input_file:normal ${input[1]} \\
         --intervals ${intervals} \\
