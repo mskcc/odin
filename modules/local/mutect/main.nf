@@ -29,8 +29,8 @@ process MUTECT {
         -XX:-UseGCOverheadLimit \\
         -Djava.io.tmpdir=./tmp \\
         -jar /usr/bin/mutect.jar \\
-        --input_file_tumor ${input[0]} \\
-        --input_file_normal ${input[1]} \\
+        --input_file:tumor ${input[0]} \\
+        --input_file:normal ${input[1]} \\
         --intervals ${intervals} \\
         ${args} \\
         --vcf ${prefix}.mutect.vcf \\
