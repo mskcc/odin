@@ -20,7 +20,7 @@ process VARDICTJAVA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: '-c 1 -S 2 -E 3'
+    def args = task.ext.args 
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
