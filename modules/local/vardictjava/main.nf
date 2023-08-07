@@ -29,15 +29,14 @@ process VARDICTJAVA {
     def filter = "/usr/bin/vardict/testsomatic.R" 
     def convert_to_vcf = "/usr/bin/vardict/var2vcf_paired.pl"
     """
-    export JAVA_OPTS='"-Xms${task.memory.toMega()/4}m" "-Xmx${task.memory.toGiga()}g" "-Dsamjdk.reference_fasta=${fasta}"'
     /usr/bin/vardict/bin/VarDict \\
         ${args} \\
         ${input} \\
         -th ${task.cpus} \\
         -G ${fasta} \\
         ${bed} \\
-    | ${filter} \\
-    | ${convert_to_vcf} \\
+    | Rscript ${filter} \\
+    | perl ${convert_to_vcf} \\
         ${args2} \\
     > ${prefix}.vcf
 
