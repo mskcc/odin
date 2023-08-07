@@ -1,6 +1,6 @@
 
 //include { MUTECT } from '../../modules/local/mutect/main'
-include { VARDICTJAVA } from '../../../modules/local/vardictjava/main'
+include { VARDICTJAVA } from '../../../modules/nf-core/vardictjava/main'
 
 
 workflow CALL_VARIANTS {
