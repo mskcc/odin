@@ -33,6 +33,8 @@ class RowChecker:
         pairId="pairId",
         tumorBam="tumorBam",
         normalBam="normalBam",
+        tumorSampleName="tumorSampleName",
+        normalSampleName="normalSampleName",
         assay="assay",
         normalType="normalType",
         **kwargs,
@@ -41,13 +43,15 @@ class RowChecker:
         Initialize the row checker with the expected column names.
 
         Args:
-            
+
 
         """
         super().__init__(**kwargs)
         self._pairId=pairId
         self._tumorBam=tumorBam
         self._normalBam=normalBam
+        self._tumorSampleName=tumorSampleName
+        self._normalSampleName=normalSampleName
         self._assay=assay
         self._normalType=normalType
         self._seen = set()
@@ -72,6 +76,10 @@ class RowChecker:
         """Assert that the sample names exist"""
         if len(row[self._pairId]) <= 0:
             raise AssertionError("pairId is required.")
+        if len(row[self._tumorSampleName]) <= 0:
+            raise AssertionError("tumorSampleName is required.")
+        if len(row[self._normalSampleName]) <= 0:
+            raise AssertionError("normalSampleName is required.")
 
     def _validate_bams(self, row):
         """Assert that the first FASTQ entry is non-empty and has the right format."""
@@ -146,7 +154,7 @@ def check_samplesheet(file_in, file_out):
             SAMPLE_TUMOR,BAM_TUMOR,SAMPLE_NORMAL,BAM_NORMAL,BAITS
 
     """
-    required_columns = {"pairId","tumorBam","normalBam","assay","normalType"}
+    required_columns = {"pairId","tumorBam","normalBam","tumorSampleName","assay","normalType"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
