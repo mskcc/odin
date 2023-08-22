@@ -34,6 +34,7 @@ def main():
 
     # Compress input VCF file using bgzip, then index compressed VCF file using tabix
     gz_vcf = vcf_in + ".gz"
+
     execute_shell(["bgzip", "-c", vcf_in, ">", gz_vcf])
     execute_shell(["tabix", "-p", "vcf", gz_vcf])
 
@@ -158,9 +159,11 @@ def main():
     vcf_out_fw.close()
     vcf_in_fr.close()
 
-    # Cleanup files that we no longer need
-    os.remove(gz_vcf)
-    os.remove(gz_vcf + ".tbi")
+    # TODO: why? --> Cleanup files that we no longer need
+    #
+    #os.remove(gz_vcf)
+    #os.remove(gz_vcf + ".tbi")
+    #
 
     # write score results for R
     #vcf_out_dir = os.path.abspath(vcf_out)
