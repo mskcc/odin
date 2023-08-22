@@ -11,7 +11,7 @@ include { BCFTOOLS_ANNOTATE } from '../../../modules/local/bcftools-annotate/mai
 workflow CALL_VARIANTS {
 
     take:
-    ch_bams           // meta, path bams, path bais, path bed
+    ch_bams           // meta, path bams, path bais
     ch_bedfile        // bedfile path
     ch_fasta_ref      // fasta path
     ch_fasta_fai_ref  // fasta_fai path
@@ -27,10 +27,6 @@ workflow CALL_VARIANTS {
     ch_bams
         .combine(ch_bedfile)
         .set{ vc_input }
-
-    vc_input.view()
-    ch_fasta_ref.view()
-    ch_fasta_fai_ref.view()
 
     MUTECT (
         vc_input,
