@@ -27,6 +27,8 @@ def create_bam_channel(LinkedHashMap row) {
     meta.id         = row.pairId
     meta.assay      = row.assay
     meta.normalType = row.normalType
+    meta.tumorSampleName = row.tumorSampleName
+    meta.normalSampleName = row.normalSampleName
 
     // add path(s) of the bam files to the meta map
     def bams = []
@@ -46,7 +48,7 @@ def create_bam_channel(LinkedHashMap row) {
     if (!file(normalBai).exists()) {
         exit 1, "ERROR: Please verify inputs -> Normal BAI file does not exist!\n${row.normalBam}"
     }
- 
+
     bams = [ meta, [ file(row.tumorBam), file(row.normalBam) ], [ file(tumorBai), file(normalBai) ] ]
     return bams
 }
