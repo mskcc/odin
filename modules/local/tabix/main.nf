@@ -23,7 +23,7 @@ process TABIX {
     /usr/local/bin/tabix \\
         ${args} \\
         ${inputVcf}
-    ls
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bcftools: 1.9
