@@ -16,8 +16,7 @@ process BASICFILTERING_COMPLEX {
     containerOptions "--bind $PWD"
 
     input:
-    tuple val(meta), path(input), path(input_index), path(intervals)
-    tuple val(meta2),  path(inputVcf)
+    tuple val(meta), path(inputVcf), path(input), path(input_index)
 
     output:
     tuple val(meta), path("*.vcf.gz")     , emit: vcf
@@ -27,7 +26,7 @@ process BASICFILTERING_COMPLEX {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def output_vcf = inputVcf.getName().replaceAll('.vcf$', '.complex_filtered.vcf')
+    def output_vcf = prefix + '.complex_filtered.vcf'
     def assay = meta.assay;
     def nrm_noise = params.default_complex_nn
     def tm_noise = params.default_complex_tn
