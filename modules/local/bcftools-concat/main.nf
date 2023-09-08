@@ -9,8 +9,7 @@ process BCFTOOLS_CONCAT {
         'docker.io/mskcc/htslib:1.9' }"
 
     input:
-    tuple val(meta), path(inputVcfs)
-    tuple val(meta2), path(inputVcfTbis)
+    tuple val(meta), path(inputVcfs), path(inputVcfTbis)
 
     output:
     tuple val(meta), path("*.vcf.gz")  , emit: vcf
@@ -20,7 +19,7 @@ process BCFTOOLS_CONCAT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def input_vcfs = inputVcfs.join(" ")
-    def output_vcf = meta.tumorSampleName + "." + meta.normalSampleName + ".combined-variants.vcf.gz"
+    def output_vcf = "${prefix}.combined-variants.vcf.gz"
     """
     /usr/bin/bcftools concat \\
         ${input_vcfs} \\
