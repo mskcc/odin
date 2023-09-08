@@ -9,10 +9,7 @@ process BCFTOOLS_ANNOTATE {
         'docker.io/mskcc/htslib:1.9' }"
 
     input:
-    tuple val(meta), path(inputVcf)
-    tuple val(meta2), path(inputVcfTbis)
-    tuple val(meta3), path(annotateVcf)
-    tuple val(meta4), path(annotateVcfTbis)
+    tuple val(meta), path(inputVcf), path(inputVcfTbi), path(annotateVcf), path(annotateVcfTbis)
 
     output:
     tuple val(meta), path("*.vcf")  , emit: vcf
@@ -21,7 +18,7 @@ process BCFTOOLS_ANNOTATE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def output_vcf = meta.tumorSampleName + "." + meta.normalSampleName + ".annotate-variants.vcf"
+    def output_vcf = prefix + ".annotate-variants.vcf"
     """
     /usr/bin/bcftools annotate \\
         ${args} \\
