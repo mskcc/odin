@@ -22,7 +22,7 @@ process VARDICTJAVA {
     script:
     def args = task.ext.args
     def args2 = task.ext.args2 ?: ''
-    def prefix = bams[0].getSimpleName() +"." + bams[1].getSimpleName()
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     def somatic = true  // this is unused here, but TODO: set this up to be as similar to nf-core vardictjava as possible
     def input = "-b \"${bams[0]}|${bams[1]}\""
@@ -33,6 +33,7 @@ process VARDICTJAVA {
     /usr/bin/vardict/bin/VarDict \\
         ${args} \\
         ${input} \\
+        -N ${meta.tumorSampleName} \\
         -th ${task.cpus} \\
         -G ${fasta} \\
         ${bed} \\
