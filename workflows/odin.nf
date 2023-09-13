@@ -32,6 +32,8 @@ WorkflowOdin.initialise(params, log)
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
+include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_intervals'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,36 +63,53 @@ workflow ODIN {
     INPUT_CHECK (
         file(params.input)
     )
+
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-    
+
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
     // ! There is currently no tooling to help you write a sample sheet schema
 
     // Run variant callers
     // TODO: Going to assume .bai for each bam is created, but in the future add something that creates index if it doesn't exist
-    ch_fasta_ref = Channel.of([ "reference_genome", file(params.genome_file) ])
-    ch_fasta_fai_ref = Channel.of([ "reference_genome_index", file(params.genome_index) ])
-    ch_bedfile = Channel.of([ file(params.bed_file) ])
-    ch_dbsnp = Channel.of([ "dbsnp", file(params.dbsnp) ])
-    ch_cosmic = Channel.of([ "cosmic", file(params.cosmic) ])
+    ch_fasta_ref = Channel.value([ "reference_genome", file(params.genome_file) ])
+    ref_index_list = []
+    for(single_genome_ref in params.genome_index){
+        ref_index_list.add(file(single_genome_ref))
+    }
+    ch_fasta_fai_ref = Channel.value([ "reference_genome_index",ref_index_list])
+    ch_bedfile = Channel.value([ file(params.bed_file) ])
+    ch_dbsnp = Channel.value([ "dbsnp", file(params.dbsnp) ])
+    ch_cosmic = Channel.value([ "cosmic", file(params.cosmic) ])
+    ch_hotspot = Channel.value([ "hotspot", file(params.hotspot) ])
+    intervals = params.intervals
 
-    ch_fasta_ref.view()
- 
-    
-    CALL_VARIANTS (
+
+
+    FIND_COVERED_INTERVALS (
         INPUT_CHECK.out.bams,
-        ch_bedfile,
+        ch_fasta_ref,
+        ch_fasta_fai_ref,
+        intervals
+    )
+
+    variant_input = join_bams_with_bed(INPUT_CHECK.out.bams, FIND_COVERED_INTERVALS.out.bed_file)
+
+    CALL_VARIANTS (
+        variant_input,
         ch_fasta_ref,
         ch_fasta_fai_ref,
         ch_dbsnp,
-        ch_cosmic
+        ch_cosmic,
+        ch_hotspot
     )
     ch_versions = ch_versions.mix(CALL_VARIANTS.out.versions)
+
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
 
 }
 
@@ -110,6 +129,24 @@ workflow.onComplete {
     }
 }
 
+def join_bams_with_bed(bams,bed) {
+        bam_channel = bams
+            .map{
+                new Tuple(it[0].id,it)
+                }
+        bed_channel = bed
+            .map{
+                new Tuple(it[0].id,it)
+                }
+        mergedWithKey = bam_channel
+            .join(bed_channel)
+        merged = mergedWithKey
+            .map{
+                new Tuple(it[1][0],it[1][1],it[1][2],it[2][1])
+            }
+        return merged
+
+}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END

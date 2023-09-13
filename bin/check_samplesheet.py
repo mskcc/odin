@@ -41,7 +41,7 @@ class RowChecker:
         Initialize the row checker with the expected column names.
 
         Args:
-            
+
 
         """
         super().__init__(**kwargs)
