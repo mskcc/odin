@@ -33,6 +33,8 @@ WorkflowOdin.initialise(params, log)
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_intervals'
+include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
+include { MAF_PROCESSING } from '../subworkflows/local/maf-processing/main'
 
 
 /*
@@ -82,6 +84,8 @@ workflow ODIN {
     ch_dbsnp = Channel.value([ "dbsnp", file(params.dbsnp) ])
     ch_cosmic = Channel.value([ "cosmic", file(params.cosmic) ])
     ch_hotspot = Channel.value([ "hotspot", file(params.hotspot) ])
+    ch_exac_filter = Channel.value(["exac_filter", file(params.exac_filter)])
+    ch_exac_filter_index = Channel.value(["exac_filter_index", file(params.exac_filter_index)])
     intervals = params.intervals
 
 
@@ -103,7 +107,20 @@ workflow ODIN {
         ch_cosmic,
         ch_hotspot
     )
+
     ch_versions = ch_versions.mix(CALL_VARIANTS.out.versions)
+
+    MAF_PROCESSING (
+        CALL_VARIANTS.out.annotate_vcf,
+        ch_fasta_ref,
+        ch_fasta_fai_ref,
+        ch_exac_filter,
+        ch_exac_filter_index,
+        INPUT_CHECK.out.bams,
+        INPUT_CHECK.out.curated_bams
+    )
+
+    ch_versions = ch_versions.mix(MAF_PROCESSING.out.versions)
 
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

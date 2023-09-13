@@ -32,6 +32,8 @@ workflow INPUT_CHECK {
     bams = combined_bams
         .map{ set_bam_sample_name(it) }
 
+    curated_bams = get_curated_bams()
+
 
     ch_versions = Channel.empty()
     ch_versions = ch_versions.mix(SAMPLESHEET_CHECK.out.versions)
@@ -40,7 +42,8 @@ workflow INPUT_CHECK {
 
 
     emit:
-    bams                                     // channel: [ val(meta), [ bams ] ]
+    bams                 // channel: [ val(meta), [ bams ] ]
+    curated_bams           // channel: [ch_meta, curated_bams, curated_bams_bai]
     versions = ch_versions // channel: [ versions.yml ]
 }
 def tuple_join(first, second) {
@@ -61,6 +64,30 @@ def tuple_join(first, second) {
     return merged
 
 }
+// Gets a list of curated bams
+def get_curated_bams() {
+
+    bams = files("${params.curated_bam_path}/*.bam")
+    bam_indexes = files("${params.curated_bam_path}/*.bai")
+
+    if(bams.size == 0)
+    {
+        exit 1, "ERROR: Please check the curated bams folder contains bams: \n${params.curated_bam_path}"
+    }
+
+
+    if(bam_indexes.size == 0)
+    {
+        exit 1, "ERROR: Please check the curated bams folder contains bai index files: \n${params.curated_bam_path}"
+
+    }
+
+    curated_bams = ["curated_bams", bams, bam_indexes]
+    return curated_bams
+
+
+}
+
 // Function to get list of [ meta, [ tumorBam, normalBam, assay, normalType ] ]
 def create_bam_channel(LinkedHashMap row) {
     // create meta map
@@ -85,6 +112,7 @@ def create_bam_channel(LinkedHashMap row) {
 
     def foundTumorBai = ""
     def foundNormalBai = ""
+
 
     if (file(tumorBai).exists()) {
         foundTumorBai = tumorBai
