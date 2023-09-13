@@ -97,7 +97,7 @@ workflow ODIN {
         intervals
     )
 
-    variant_input = join_bams_with_bed(INPUT_CHECK.out.bams, FIND_COVERED_INTERVALS.out.bed_file)
+    variant_input = join_bams_with_bed(INPUT_CHECK.out.bams, ch_bedfile)
 
     CALL_VARIANTS (
         variant_input,
