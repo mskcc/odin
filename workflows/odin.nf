@@ -90,14 +90,14 @@ workflow ODIN {
 
 
 
-    FIND_COVERED_INTERVALS (
-        INPUT_CHECK.out.bams,
-        ch_fasta_ref,
-        ch_fasta_fai_ref,
-        intervals
-    )
+//    FIND_COVERED_INTERVALS (
+//        INPUT_CHECK.out.bams,
+//        ch_fasta_ref,
+//        ch_fasta_fai_ref,
+//        intervals
+//    )
 
-    variant_input = join_bams_with_bed(INPUT_CHECK.out.bams, ch_bedfile)
+    variant_input = INPUT_CHECK.out.bams.combine(ch_bedfile)
 
     CALL_VARIANTS (
         variant_input,
