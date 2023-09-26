@@ -3,8 +3,8 @@ process MAF_FILTER {
     label 'process_small'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/helix_filters_01:21.4.1':
-        'docker.io/mskcc/helix_filters_01:21.4.1' }"
+        'docker://mskcc/helix_filters_01:23.9.0':
+        'docker.io/mskcc/helix_filters_01:23.9.0' }"
 
     input:
     tuple val(meta), path(input_maf)
