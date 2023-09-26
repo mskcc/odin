@@ -1,3 +1,5 @@
+include { MAF_FILTER } from '../../../modules/local/maf-filter/main'
+
 workflow MAF_FILTER_WORKFLOW {
 
     take:
