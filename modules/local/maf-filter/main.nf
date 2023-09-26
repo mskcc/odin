@@ -13,6 +13,7 @@ process MAF_FILTER {
     tuple val(meta), path("*.analysis.muts.maf")         , emit: analysis_maf
     tuple val(meta), path("*.rejected.muts.maf")         , emit: rejected_maf
     tuple val(meta), path("data_mutations_extended.txt") , emit: data_mutations_extended_txt
+    path "versions.yml"                                  , emit: versions
 
     script:
     task.ext.when == null || task.ext.when
