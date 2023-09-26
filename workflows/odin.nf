@@ -35,7 +35,7 @@ include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_intervals'
 include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { MAF_PROCESSING } from '../subworkflows/local/maf-processing/main'
-include { MAF_FILTER_WORKFLOW } from '../subworkflows/local/maf-filter-workflow/main'
+include { MAF_FILTER_WORKFLOW } from '../subworkflows/local/maf-filter/main'
 
 
 /*
