@@ -1,6 +1,6 @@
 process MAF_FILTER {
     tag "$meta.id"
-    label 'process_small'
+    label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://mskcc/helix_filters_01:23.9.0':
