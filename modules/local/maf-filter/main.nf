@@ -18,8 +18,12 @@ process MAF_FILTER {
     script:
     task.ext.when == null || task.ext.when
     def argos_version = task.ext.argos_version ?: '1.5.0'
-    def is_impact = task.ext.is_impact ?: true
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def impact_assay = task.ext.impact_assay ?: false
+    def is_impact = ""
+    if ( impact_assay ) (
+        is_impact = "--is-impact"
+    )
     """
     python $PWD/bin/maf-filter/maf_filter.py \\
         ${input_maf} \\
@@ -28,7 +32,7 @@ process MAF_FILTER {
         --analyst-file ${prefix}.analysis.muts.maf \\
         --portal-file data_mutations_extended.txt \\
         --version-string ${argos_version} \\
-        --is-impact ${is_impact}
+        ${is_impact} 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
