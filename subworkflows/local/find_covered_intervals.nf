@@ -12,7 +12,7 @@ workflow FIND_COVERED_INTERVALS {
     main:
 
     interval_channel = Channel.fromList(intervals)
-    distributed_intervals = interval_channel.collate(3)
+    distributed_intervals = interval_channel.collate(10)
 
     GATK_FINDCOVEREDINTERVALS (
         ch_bams,
