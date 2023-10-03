@@ -6,6 +6,8 @@ process MAF_FILTER {
         'docker://mskcc/helix_filters_01:23.9.0':
         'docker.io/mskcc/helix_filters_01:23.9.0' }"
 
+    containerOptions "--bind $PWD"
+
     input:
     tuple val(meta), path(input_maf)
 
@@ -32,7 +34,7 @@ process MAF_FILTER {
         --analyst-file ${prefix}.analysis.muts.maf \\
         --portal-file data_mutations_extended.txt \\
         --version-string ${argos_version} \\
-        ${is_impact} 
+        ${is_impact}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
