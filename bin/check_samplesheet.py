@@ -35,6 +35,7 @@ class RowChecker:
         normalBam="normalBam",
         assay="assay",
         normalType="normalType",
+        bedFile="bedFile",
         **kwargs,
     ):
         """
@@ -50,6 +51,7 @@ class RowChecker:
         self._normalBam=normalBam
         self._assay=assay
         self._normalType=normalType
+        self._bedFile=bedFile
         self._seen = set()
         self.modified = []
 
@@ -65,6 +67,7 @@ class RowChecker:
         self._validate_names(row)
         self._validate_bams(row)
         self._validate_normalType(row)
+        self._validate_bed_format(row)
         self._seen.add((row[self._pairId]))
         self.modified.append(row)
 
@@ -92,6 +95,17 @@ class RowChecker:
                 f"The BAM file has an unrecognized extension: {filename}\n"
                 f"It should be one of: {', '.join(self.VALID_FORMATS)}"
             )
+
+    def _validate_bed_format(self, row):
+        """Assert that a given filename has one of the expected BED extensions."""
+        filename = row[self._bedFile]
+        if filename and filename != "NONE":
+            if not filename.endswith(".bed"):
+                raise AssertionError(
+                    f"The BED file has an unrecognized extension: {filename}\n"
+                    f"It should be .bed\n"
+                    f"If you would like one generated for you leave it bank or enter 'NONE'\n"
+                )
 
 
 def read_head(handle, num_lines=10):
@@ -142,11 +156,11 @@ def check_samplesheet(file_in, file_out):
         This function checks that the samplesheet follows the following structure,
         see also the `viral recon samplesheet`_::
 
-            pairId,tumorBam,normalBam,assay,normalType
+            pairId,tumorBam,normalBam,assay,normalType,bedFile
             SAMPLE_TUMOR,BAM_TUMOR,SAMPLE_NORMAL,BAM_NORMAL,BAITS
 
     """
-    required_columns = {"pairId","tumorBam","normalBam","assay","normalType"}
+    required_columns = {"pairId","tumorBam","normalBam","assay","normalType","bedFile"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
         reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
