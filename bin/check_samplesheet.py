@@ -157,7 +157,7 @@ def check_samplesheet(file_in, file_out):
         see also the `viral recon samplesheet`_::
 
             pairId,tumorBam,normalBam,assay,normalType,bedFile
-            SAMPLE_TUMOR,BAM_TUMOR,SAMPLE_NORMAL,BAM_NORMAL,BAITS
+            SAMPLE_TUMOR,BAM_TUMOR,SAMPLE_NORMAL,BAM_NORMAL,BAITS,NORMAL_TYPE,BED_FILE
 
     """
     required_columns = {"pairId","tumorBam","normalBam","assay","normalType","bedFile"}
