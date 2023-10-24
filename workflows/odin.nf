@@ -89,16 +89,27 @@ workflow ODIN {
     ch_exac_filter_index = Channel.value(["exac_filter_index", file(params.exac_filter_index)])
     intervals = params.intervals
 
+    input_files = INPUT_CHECK.out.bams
+        .branch {
+            no_bed: it[3] == null
+            bed_provided: it[3] != null
+        }
 
+    fci_input = input_files.no_bed
+        .map{
+            new Tuple(it[0],it[1],it[2])
+        }
 
     FIND_COVERED_INTERVALS (
-        INPUT_CHECK.out.bams,
+        fci_input,
         ch_fasta_ref,
         ch_fasta_fai_ref,
         intervals
     )
 
-    variant_input = join_bams_with_bed(INPUT_CHECK.out.bams, FIND_COVERED_INTERVALS.out.bed_file)
+    generated_beds = join_bams_with_bed(fci_input, FIND_COVERED_INTERVALS.out.bed_file)
+
+    variant_input = input_files.bed_provided.mix(generated_beds)
 
     CALL_VARIANTS (
         variant_input,
@@ -122,7 +133,7 @@ workflow ODIN {
     )
 
     ch_versions = ch_versions.mix(MAF_PROCESSING.out.versions)
-    
+
     MAF_FILTER_WORKFLOW (
         MAF_PROCESSING.out.maf
     )

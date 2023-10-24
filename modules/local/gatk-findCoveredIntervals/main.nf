@@ -22,7 +22,7 @@ process GATK_FINDCOVEREDINTERVALS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def bam_list = bams.join(" --input_file ")
-    def output_interval = interval.join("_") + ".fci"
+    def output_interval = prefix + "_" + interval.join("_") + ".fci"
     def interval_list = interval.join(" --intervals ")
 
     """

@@ -12,7 +12,6 @@
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-
 ## Usage
 
 > **Note**
@@ -28,11 +27,18 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-tumor_name,tumor_bam,normal_name,normal_bam,baitset
-the_tumor_sample_name,tumor.bam,the_normal_sample_name,normal.bam,my_bait_set
+pairId,tumorBam,normalBam,assay,normalType,bedFile
+pair_id,tumor.bam,normal.bam,assay,normalType,optional:regions.bed
 ```
 
 Each row represents a pair of bam files and bait set.
+
+For optional bed file, you can either enter a bed file leave it bank and one will be generated using covered intervals.
+To leave the field blank you can use any of these options:
+
+pair_id,tumor.bam,normal.bam,assay,normalType,None
+pair_id,tumor.bam,normal.bam,assay,normalType,null
+pair_id,tumor.bam,normal.bam,assay,normalType,
 
 -->
 

@@ -30,7 +30,7 @@ workflow INPUT_CHECK {
     combined_bams = tuple_join(combined_bams,normal_header.out.sample_name )
 
     bams = combined_bams
-        .map{ set_bam_sample_name(it) }
+        .map{ set_samplename_meta_and_bed_file(it) }
 
     curated_bams = get_curated_bams()
 
@@ -98,11 +98,21 @@ def create_bam_channel(LinkedHashMap row) {
 
     // add path(s) of the bam files to the meta map
     def bams = []
+    def bedFile = null
     if (!file(row.tumorBam).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> Tumor BAM file does not exist!\n${row.tumorBam}"
     }
     if (!file(row.normalBam).exists()) {
         exit 1, "ERROR: Please check input samplesheet -> Normal BAM file does not exist!\n${row.normalBam}"
+    }
+
+    row_bedfile = row.bedFile.trim()
+    if(row_bedfile && row_bedfile != "null" && row_bedfile != "NONE") {
+        if (!file(row_bedfile).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> Bed file does not exist!\n${row.bedFile}"
+        }
+
+        bedFile = file(row_bedfile)
     }
 
     def tumorBai = "${row.tumorBam}.bai"
@@ -138,16 +148,17 @@ def create_bam_channel(LinkedHashMap row) {
     }
 
 
-    bams = [ meta, [ file(row.tumorBam), file(row.normalBam) ], [ file(foundTumorBai), file(foundNormalBai) ] ]
+    bams = [ meta, [ file(row.tumorBam), file(row.normalBam) ], [ file(foundTumorBai), file(foundNormalBai) ], bedFile ]
     return bams
 }
 
-def set_bam_sample_name(List bams) {
+def set_samplename_meta_and_bed_file(List bams) {
     meta = bams[0]
-    def tumorSample = bams[3]
+    def tumorSample = bams[4]
     def tumorBam = bams[1][0]
-    def normalSample = bams[4]
+    def normalSample = bams[5]
     def normalBam = bams[1][1]
+    def bedFile = bams[3]
     if( tumorSample == null || tumorSample.isEmpty() ){
         exit 1, "ERROR: No sample name found for tumor sample, please make sure the SM tag is set in the bam\n${tumorBam}"
     }
@@ -156,6 +167,6 @@ def set_bam_sample_name(List bams) {
     }
     meta.tumorSampleName = tumorSample.trim()
     meta.normalSampleName = normalSample.trim()
-    return [ meta, bams[1], bams[2] ]
+    return [ meta, bams[1], bams[2], bedFile ]
 
 }
