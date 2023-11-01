@@ -36,6 +36,7 @@ include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_inte
 include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { MAF_PROCESSING } from '../subworkflows/local/maf-processing/main'
 include { MAF_FILTER_WORKFLOW } from '../subworkflows/local/maf-filter/main'
+include { TMB_WORKFLOW } from '../subworkflows/local/tmb/main'
 
 
 /*
@@ -139,6 +140,12 @@ workflow ODIN {
     )
 
     ch_versions = ch_versions.mix(MAF_FILTER_WORKFLOW.out.versions)
+
+    TMB_WORKFLOW (
+        MAF_FILTER_WORKFLOW.out.data_mutations_extended_file
+    )
+
+    ch_versions = ch_versions.mix(TMB_WORKFLOW.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
