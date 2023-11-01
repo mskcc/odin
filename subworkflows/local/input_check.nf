@@ -115,6 +115,10 @@ def create_bam_channel(LinkedHashMap row) {
         bedFile = file(row_bedfile)
     }
 
+    if(!(meta.assay in params.impact_assay_info.keySet())){
+        exit 1, "ERROR: Please check input assay -> Coverage value not found in config\n${params.impact_assay_info.keySet()}"
+    }
+
     def tumorBai = "${row.tumorBam}.bai"
     def normalBai = "${row.normalBam}.bai"
     def tumorBaiAlt = "${row.tumorBam}".replaceAll('bam$', 'bai')
