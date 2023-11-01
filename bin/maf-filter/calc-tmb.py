@@ -9,9 +9,19 @@ import sys
 import argparse
 from cBioPortal_utils import MafReader
 
+def write_tmb_file(fout,value,sample_id):
+    if not sample_id:
+        sample_id_str = "NA"
+    else:
+        sample_id_str = sample_id
+    output_contents = "CMO_TMB_SCORE\tSampleID\n{}\t{}\n".format(value,sample_id_str)
+    fout.write(output_contents)
+    fout.close()
+
 def calc_from_values(
     num_variants, # str | float | int
     genome_coverage, # str | float | int
+    tumor_id = None, # str
     megabases = False,
     _print = False,
     output_file = None,
@@ -53,12 +63,14 @@ def calc_from_values(
             fout = sys.stdout
         if output_file:
             fout = open(output_file, "w")
-        fout.write(numpy.format_float_positional(tmb, trim = '0', precision = 4) + '\n')
+        tmb_value = numpy.format_float_positional(tmb, trim = '0', precision = 4)
+        write_tmb_file(fout,tmb_value,tumor_id)
 
     return(tmb)
 
 def normal_override(
     normal_id, # str
+    tumor_id, # str
     na_str = 'NA',
     output_file = None
     ):
@@ -73,8 +85,7 @@ def normal_override(
             fout = open(output_file, "w")
         else:
             fout = sys.stdout
-        fout.write(na_str + '\n')
-        fout.close()
+        write_tmb_file(fout,na_str,tumor_id)
 
     return(is_bad)
 
@@ -83,6 +94,7 @@ def calc_from_file(
     output_file,
     genome_coverage, # str | float | int
     normal_id = None, # str or None
+    tumor_id = None, # str or None
     na_str = 'NA',
     func = None # dummy arg for parser
     ):
@@ -96,7 +108,7 @@ def calc_from_file(
     # check if a normal_id was passed in order to just output NA value instead
     override = False
     if normal_id:
-        override = normal_override(normal_id, na_str = na_str, output_file = output_file)
+        override = normal_override(normal_id, tumor_id, na_str = na_str, output_file = output_file)
     if override:
         sys.exit(0)
 
@@ -114,6 +126,7 @@ def calc_from_file(
         num_variants = num_variants,
         output_file = output_file,
         genome_coverage = genome_coverage,
+        tumor_id= tumor_id,
         megabases = megabases,
         _print = _print
         )
@@ -133,6 +146,7 @@ def parse():
     from_values = subparsers.add_parser('from-values', help = 'Calculate the TMB in Megabases from values passed')
     from_values.add_argument('--num-variants', dest = 'num_variants', required = True, help = 'Number of variants')
     from_values.add_argument('--genome-coverage', dest = 'genome_coverage', required = True, help = 'Number of base pairs of the genome covered by the assay')
+    from_values.add_argument('--tumor-id', dest = 'tumor_id', help = "The sample ID of the tumor sample used with the normal")
     from_values.add_argument('--raw', dest = 'megabases', action='store_false', help = 'Return the raw TMB value instead of the value in Megabases')
     from_values.add_argument('--no-print', dest = '_print', action='store_false', help = 'Dont print the output')
     from_values.add_argument('--output-file', dest = 'output_file', help = 'File to write values to')
@@ -143,6 +157,7 @@ def parse():
     from_file.add_argument('input_file', help = 'File to read variants from')
     from_file.add_argument('output_file', help = 'File to write TMB value to')
     from_file.add_argument('--genome-coverage', dest = 'genome_coverage', required = True, help = 'Number of base pairs of the genome covered by the assay')
+    from_file.add_argument('--tumor-id', dest = 'tumor_id', help = "The sample ID of the tumor sample used with the normal")
     from_file.add_argument('--normal-id', dest = 'normal_id', help = "The sample ID of the normal sample used with the tumor, in order to check if the tumor used a pooled normal and should not have a TMB calculated; if so, the NA string will be output instead")
     from_file.add_argument('--na-str', dest = 'na_str', default = 'NA', help = 'Value to output if a pooled normal id was passed in with --normal-id')
     from_file.set_defaults(func = calc_from_file)
