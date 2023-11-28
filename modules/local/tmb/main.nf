@@ -20,7 +20,7 @@ process TMB {
     def argos_version = task.ext.argos_version ?: '1.5.0'
     def prefix = task.ext.prefix ?: "${meta.id}"
     def assay = "${meta.assay}".toUpperCase()
-    def genome_coverage = params.impact_assay_info[assay]
+    def genome_coverage = params.assay_coverage_info[assay]
 
     """
     python $PWD/bin/maf-filter/calc-tmb.py \\

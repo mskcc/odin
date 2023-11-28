@@ -115,8 +115,8 @@ def create_bam_channel(LinkedHashMap row) {
         bedFile = file(row_bedfile)
     }
 
-    if(!(meta.assay in params.impact_assay_info.keySet())){
-        exit 1, "ERROR: Please check input assay -> Coverage value not found in config\n${params.impact_assay_info.keySet()}"
+    if(!(meta.assay in params.assay_coverage_info.keySet())){
+        exit 1, "ERROR: Please check input assay -> Coverage value not found in config\n${params.assay_coverage_info.keySet()}"
     }
 
     def tumorBai = "${row.tumorBam}.bai"
