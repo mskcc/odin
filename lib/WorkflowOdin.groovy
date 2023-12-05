@@ -13,8 +13,8 @@ class WorkflowOdin {
     public static void initialise(params, log) {
 
 
-        if (!params.genome_file) {
-            Nextflow.error "Genome file not specified with e.g. '--genomeFile genome.fa' or via a detectable config file."
+        if (!params.genome) {
+            Nextflow.error "Genome not specified with e.g. '--genome GRCh37' or via a detectable config file."
         }
     }
 
