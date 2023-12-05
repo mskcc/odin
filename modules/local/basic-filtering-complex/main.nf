@@ -13,7 +13,7 @@ process BASICFILTERING_COMPLEX {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://mskcc/basic-filtering:0.3':
         'docker.io/mskcc/basic-filtering:0.3' }"
-    containerOptions "--bind $PWD"
+    containerOptions "--bind $projectDir"
 
     input:
     tuple val(meta), path(inputVcf), path(input), path(input_index)
@@ -37,7 +37,7 @@ process BASICFILTERING_COMPLEX {
 
 
     """
-    python $PWD/bin/basicfiltering/filter_complex.py \\
+    python $projectDir/bin/basicfiltering/filter_complex.py \\
         ${args} \\
         --input-vcf ${inputVcf} \\
         --tumor-id ${meta.tumorSampleName} \\

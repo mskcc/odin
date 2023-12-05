@@ -163,7 +163,7 @@ def check_samplesheet(file_in, file_out):
     required_columns = {"pairId","tumorBam","normalBam","assay","normalType","bedFile"}
     # See https://docs.python.org/3.9/library/csv.html#id3 to read up on `newline=""`.
     with file_in.open(newline="") as in_handle:
-        reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle))
+        reader = csv.DictReader(in_handle, dialect=sniff_format(in_handle),delimiter=',')
         # Validate the existence of the expected header columns.
         if not required_columns.issubset(reader.fieldnames):
             req_cols = ", ".join(required_columns)

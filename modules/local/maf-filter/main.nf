@@ -6,7 +6,7 @@ process MAF_FILTER {
         'docker://mskcc/helix_filters_01:23.9.0':
         'docker.io/mskcc/helix_filters_01:23.9.0' }"
 
-    containerOptions "--bind $PWD"
+    containerOptions "--bind $projectDir"
 
     input:
     tuple val(meta), path(input_maf)
@@ -27,7 +27,7 @@ process MAF_FILTER {
         is_impact = "--is-impact"
     )
     """
-    python $PWD/bin/maf-filter/maf_filter.py \\
+    python $projectDir/bin/maf-filter/maf_filter.py \\
         ${input_maf} \\
         --keep-rejects \\
         --rejected-file ${prefix}.rejected.muts.maf \\

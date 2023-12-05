@@ -13,7 +13,7 @@ process BASICFILTERING_VARDICT {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://mskcc/basic-filtering:0.3':
         'docker.io/mskcc/basic-filtering:0.3' }"
-    containerOptions "--bind $PWD"
+    containerOptions "--bind $projectDir"
 
     input:
     tuple val(meta),  path(inputVcf)
@@ -30,7 +30,7 @@ process BASICFILTERING_VARDICT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    python $PWD/bin/basicfiltering/filter_vardict.py \\
+    python $projectDir/bin/basicfiltering/filter_vardict.py \\
         ${args} \\
         --inputVcf ${inputVcf} \\
         --tsampleName ${meta.tumorSampleName} \\
