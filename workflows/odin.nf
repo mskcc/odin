@@ -75,9 +75,9 @@ workflow ODIN {
 
     // Run variant callers
     // TODO: Going to assume .bai for each bam is created, but in the future add something that creates index if it doesn't exist
-    ch_fasta_ref = Channel.value([ "reference_genome", file(params.genome_file) ])
+    ch_fasta_ref = Channel.value([ "reference_genome", file(params.fasta) ])
     ref_index_list = []
-    for(single_genome_ref in params.genome_index){
+    for(single_genome_ref in params.fasta_index){
         ref_index_list.add(file(single_genome_ref))
     }
     ch_fasta_fai_ref = Channel.value([ "reference_genome_index",ref_index_list])
