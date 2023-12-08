@@ -19,7 +19,8 @@ process MAF_FILTER {
 
     script:
     task.ext.when == null || task.ext.when
-    def argos_version = task.ext.argos_version ?: '1.5.0'
+    def odin_version = task.ext.odin_version ?: workflow.manifest.version
+    def version_str = "'odin: ${odin_version}'"
     def prefix = task.ext.prefix ?: "${meta.id}"
     def impact_assay = task.ext.impact_assay ?: false
     def is_impact = ""
@@ -33,7 +34,7 @@ process MAF_FILTER {
         --rejected-file ${prefix}.rejected.muts.maf \\
         --analyst-file ${prefix}.analysis.muts.maf \\
         --portal-file data_mutations_extended.txt \\
-        --version-string ${argos_version} \\
+        --version-string ${version_str} \\
         ${is_impact}
 
     cat <<-END_VERSIONS > versions.yml
