@@ -8,8 +8,6 @@ workflow MAF_FILTER_WORKFLOW {
     main:
     ch_versions = Channel.empty()
 
-    ch_mafs.view()
-
     MAF_FILTER (
         ch_mafs
     )
