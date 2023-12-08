@@ -35,6 +35,7 @@ include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_intervals'
 include { MAF_PROCESSING } from '../subworkflows/local/maf-processing/main'
 include { MAF_FILTER_WORKFLOW } from '../subworkflows/local/maf-filter/main'
+include { MAF_ANNOTATE } from '../subworkflows/local/maf-annotate/main'
 include { TMB_WORKFLOW } from '../subworkflows/local/tmb/main'
 
 
@@ -85,6 +86,7 @@ workflow ODIN {
     ch_dbsnp = Channel.value([ "dbsnp", file(params.dbsnp) ])
     ch_cosmic = Channel.value([ "cosmic", file(params.cosmic) ])
     ch_hotspot = Channel.value([ "hotspot", file(params.hotspot) ])
+    ch_impact_gene_list = Channel.value([ "impact_gene_list", file(params.impact_gene_list) ])
     ch_exac_filter = Channel.value(["exac_filter", file(params.exac_filter)])
     ch_exac_filter_index = Channel.value(["exac_filter_index", file(params.exac_filter_index)])
     intervals = params.intervals
@@ -139,6 +141,13 @@ workflow ODIN {
     )
 
     ch_versions = ch_versions.mix(MAF_FILTER_WORKFLOW.out.versions)
+
+    MAF_ANNOTATE (
+        MAF_FILTER_WORKFLOW.out.analysis_maf,
+        ch_impact_gene_list
+    )
+
+    ch_versions = ch_versions.mix(MAF_ANNOTATE.out.versions)
 
     TMB_WORKFLOW (
         MAF_FILTER_WORKFLOW.out.data_mutations_extended_file
