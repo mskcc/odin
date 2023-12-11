@@ -3,8 +3,8 @@ process ANNOTATE_ADD_MAF_COMMENT {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/mjolnir:latest':
-        'docker.io/mskcc/mjolnir:latest' }"
+        'docker://mskcc/mjolnir:0.1.0':
+        'docker.io/mskcc/mjolnir:0.1.0' }"
 
     containerOptions "--bind $projectDir"
 
@@ -32,7 +32,7 @@ process ANNOTATE_ADD_MAF_COMMENT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mjolnir: latest
+        mjolnir: 0.1.0
     END_VERSIONS
     """
 }

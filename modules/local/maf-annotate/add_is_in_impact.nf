@@ -3,8 +3,8 @@ process ANNOTATE_ADD_IS_IN_IMPACT {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/mjolnir:latest':
-        'docker.io/mskcc/mjolnir:latest' }"
+        'docker://mskcc/mjolnir:0.1.0':
+        'docker.io/mskcc/mjolnir:0.1.0' }"
 
     containerOptions "--bind $projectDir"
 
@@ -21,14 +21,14 @@ process ANNOTATE_ADD_IS_IN_IMPACT {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    python $projectDir/bin/maf-filter/add_is_in_impact.py \\
+    python3 $projectDir/bin/maf-filter/add_is_in_impact.py \\
         --input_file ${input_maf} \\
         --output_file ${prefix}.muts.maf \\
         --IMPACT_file ${impact_gene_list}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mjolnir: latest
+        mjolnir: 0.1.0
     END_VERSIONS
     """
 }

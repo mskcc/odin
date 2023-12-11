@@ -3,8 +3,8 @@ process MAF_FILTER {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/mjolnir:latest':
-        'docker.io/mskcc/mjolnir:latest' }"
+        'docker://mskcc/mjolnir:0.1.0':
+        'docker.io/mskcc/mjolnir:0.1.0' }"
 
     containerOptions "--bind $projectDir"
 
@@ -28,7 +28,7 @@ process MAF_FILTER {
         is_impact = "--is-impact"
     )
     """
-    python $projectDir/bin/maf-filter/maf_filter.py \\
+    python3 $projectDir/bin/maf-filter/maf_filter.py \\
         ${input_maf} \\
         --keep-rejects \\
         --rejected-file ${prefix}.rejected.muts.maf \\
@@ -39,7 +39,7 @@ process MAF_FILTER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        helix_filter_01: 21.4.1
+        mjolnir: 0.1.0
     END_VERSIONS
     """
 }
