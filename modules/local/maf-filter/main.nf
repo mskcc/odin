@@ -3,8 +3,8 @@ process MAF_FILTER {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/helix_filters_01:23.9.0':
-        'docker.io/mskcc/helix_filters_01:23.9.0' }"
+        'docker://mskcc/mjolnir:latest':
+        'docker.io/mskcc/mjolnir:latest' }"
 
     containerOptions "--bind $projectDir"
 

@@ -3,8 +3,8 @@ process ANNOTATE_ADD_MAF_COMMENT {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/helix_filters_01:23.9.0':
-        'docker.io/mskcc/helix_filters_01:23.9.0' }"
+        'docker://mskcc/mjolnir:latest':
+        'docker.io/mskcc/mjolnir:latest' }"
 
     containerOptions "--bind $projectDir"
 
@@ -32,7 +32,7 @@ process ANNOTATE_ADD_MAF_COMMENT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        helix_filter_01: 21.4.1
+        mjolnir: latest
     END_VERSIONS
     """
 }
