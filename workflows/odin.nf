@@ -35,6 +35,7 @@ include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_intervals'
 include { MAF_PROCESSING } from '../subworkflows/local/maf-processing/main'
 include { MAF_FILTER_WORKFLOW } from '../subworkflows/local/maf-filter/main'
+include { TMB_WORKFLOW } from '../subworkflows/local/tmb/main'
 
 
 /*
@@ -74,9 +75,9 @@ workflow ODIN {
 
     // Run variant callers
     // TODO: Going to assume .bai for each bam is created, but in the future add something that creates index if it doesn't exist
-    ch_fasta_ref = Channel.value([ "reference_genome", file(params.genome_file) ])
+    ch_fasta_ref = Channel.value([ "reference_genome", file(params.fasta) ])
     ref_index_list = []
-    for(single_genome_ref in params.genome_index){
+    for(single_genome_ref in params.fasta_index){
         ref_index_list.add(file(single_genome_ref))
     }
     ch_fasta_fai_ref = Channel.value([ "reference_genome_index",ref_index_list])
@@ -138,6 +139,12 @@ workflow ODIN {
     )
 
     ch_versions = ch_versions.mix(MAF_FILTER_WORKFLOW.out.versions)
+
+    TMB_WORKFLOW (
+        MAF_FILTER_WORKFLOW.out.data_mutations_extended_file
+    )
+
+    ch_versions = ch_versions.mix(TMB_WORKFLOW.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
