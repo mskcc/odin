@@ -3,8 +3,8 @@ process MAF_FILTER {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/helix_filters_01:23.9.0':
-        'docker.io/mskcc/helix_filters_01:23.9.0' }"
+        'docker://mskcc/mjolnir:0.1.0':
+        'docker.io/mskcc/mjolnir:0.1.0' }"
 
     containerOptions "--bind $projectDir"
 
@@ -19,7 +19,8 @@ process MAF_FILTER {
 
     script:
     task.ext.when == null || task.ext.when
-    def argos_version = task.ext.argos_version ?: '1.5.0'
+    def odin_version = task.ext.odin_version ?: workflow.manifest.version
+    def version_str = "'odin: ${odin_version}'"
     def prefix = task.ext.prefix ?: "${meta.id}"
     def impact_assay = task.ext.impact_assay ?: false
     def is_impact = ""
@@ -27,18 +28,18 @@ process MAF_FILTER {
         is_impact = "--is-impact"
     )
     """
-    python $projectDir/bin/maf-filter/maf_filter.py \\
+    python3 $projectDir/bin/maf-filter/maf_filter.py \\
         ${input_maf} \\
         --keep-rejects \\
         --rejected-file ${prefix}.rejected.muts.maf \\
         --analyst-file ${prefix}.analysis.muts.maf \\
         --portal-file data_mutations_extended.txt \\
-        --version-string ${argos_version} \\
+        --version-string ${version_str} \\
         ${is_impact}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        helix_filter_01: 21.4.1
+        mjolnir: 0.1.0
     END_VERSIONS
     """
 }
