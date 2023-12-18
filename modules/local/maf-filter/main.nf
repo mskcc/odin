@@ -12,10 +12,10 @@ process MAF_FILTER {
     tuple val(meta), path(input_maf)
 
     output:
-    tuple val(meta), path("*.analysis.muts.maf")         , emit: analysis_maf
-    tuple val(meta), path("*.rejected.muts.maf")         , emit: rejected_maf
-    tuple val(meta), path("data_mutations_extended.txt") , emit: data_mutations_extended_txt
-    path "versions.yml"                                  , emit: versions
+    tuple val(meta), path("*.analysis.muts.maf")           , emit: analysis_maf
+    tuple val(meta), path("*.rejected.muts.maf")           , emit: rejected_maf
+    tuple val(meta), path("*.data_mutations_extended.txt") , emit: data_mutations_extended_txt
+    path "versions.yml"                                    , emit: versions
 
     script:
     task.ext.when == null || task.ext.when
@@ -33,8 +33,8 @@ process MAF_FILTER {
         --keep-rejects \\
         --rejected-file ${prefix}.rejected.muts.maf \\
         --analyst-file ${prefix}.analysis.muts.maf \\
-        --portal-file data_mutations_extended.txt \\
-        --version-string ${version_str} \\
+        --portal-file ${prefix}.data_mutations_extended.txt \\
+        --version-string ${argos_version} \\
         ${is_impact}
 
     cat <<-END_VERSIONS > versions.yml
