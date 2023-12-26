@@ -8,6 +8,8 @@ process ANNOTATE_ADD_IS_IN_IMPACT {
 
     containerOptions "--bind $projectDir"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "${meta.id}.*", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(input_maf)
     tuple val(meta2), path(impact_gene_list)
