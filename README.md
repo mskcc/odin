@@ -1,12 +1,14 @@
 ## Introduction
 
-**mskcc/odin** is a bioinformatics pipeline that ...
+**mskcc/odin** is a bioinformatics pipeline that performs variant analysis on a pair of bams. The output is an annotated maf that is properly filtered and annotated.
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
    major pipeline sections and the types of output it produces. You're giving an overview to someone new
    to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
 -->
+
+![ODIN diagram](docs/images/oding_diagram.png)
 
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
@@ -63,6 +65,8 @@ nextflow run mskcc/odin \
 mskcc/odin was originally written by C. Allan Bolipata.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
+
+- Nikhil ([@nikhil](https://github.com/nikhil))
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
