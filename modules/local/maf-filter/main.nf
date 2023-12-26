@@ -34,7 +34,7 @@ process MAF_FILTER {
         --rejected-file ${prefix}.rejected.muts.maf \\
         --analyst-file ${prefix}.analysis.muts.maf \\
         --portal-file ${prefix}.data_mutations_extended.txt \\
-        --version-string ${argos_version} \\
+        --version-string ${version_str} \\
         ${is_impact}
 
     cat <<-END_VERSIONS > versions.yml
