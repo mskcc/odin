@@ -1,6 +1,6 @@
 ## Introduction
 
-**mskcc/odin** is a bioinformatics pipeline that ...
+**mskcc/odin** is a bioinformatics pipeline that performs variant analysis on a pair of bams. The output is an annotated maf that is properly filtered and annotated.
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -8,10 +8,11 @@
    to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
 -->
 
+![ODIN diagram](docs/images/oding_diagram.png)
+
 <!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
 
 ## Usage
 
@@ -28,11 +29,18 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-tumor_name,tumor_bam,normal_name,normal_bam,baitset
-the_tumor_sample_name,tumor.bam,the_normal_sample_name,normal.bam,my_bait_set
+pairId,tumorBam,normalBam,assay,normalType,bedFile
+pair_id,tumor.bam,normal.bam,assay,normalType,optional:regions.bed
 ```
 
 Each row represents a pair of bam files and bait set.
+
+For optional bed file, you can either enter a bed file leave it bank and one will be generated using covered intervals.
+To leave the field blank you can use any of these options:
+
+pair_id,tumor.bam,normal.bam,assay,normalType,None
+pair_id,tumor.bam,normal.bam,assay,normalType,null
+pair_id,tumor.bam,normal.bam,assay,normalType,
 
 -->
 
@@ -57,6 +65,8 @@ nextflow run mskcc/odin \
 mskcc/odin was originally written by C. Allan Bolipata.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
+
+- Nikhil ([@nikhil](https://github.com/nikhil))
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
