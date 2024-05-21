@@ -40,12 +40,16 @@ WorkflowMain.initialise(workflow, params, log)
 */
 
 include { ODIN } from './workflows/odin'
+include { INPUT_CHECK } from './subworkflows/local/input_check'
 
 //
 // WORKFLOW: Run main mskcc/odin analysis pipeline
 //
 workflow MSKCC_ODIN {
-    ODIN ()
+    INPUT_CHECK (
+        file(params.input)
+    )
+    ODIN (INPUT_CHECK.out.bams)
 }
 
 /*
