@@ -13,7 +13,9 @@ process BASICFILTERING_MUTECT {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://mskcc/basic-filtering:0.3':
         'docker.io/mskcc/basic-filtering:0.3' }"
-    containerOptions "--bind $projectDir"
+
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.gz", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.tbi", mode: params.publish_dir_mode
 
     input:
     tuple val(meta),  path(inputVcf)
@@ -32,8 +34,7 @@ process BASICFILTERING_MUTECT {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    export SINGULARITY_BIND="$projectDir"
-    python $projectDir/bin/basicfiltering/filter_mutect.py \\
+    filter_mutect.py \\
         ${args} \\
         --inputVcf ${inputVcf} \\
         --inputTxt ${inputTxt} \\

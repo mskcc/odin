@@ -8,6 +8,8 @@ process REMOVE_VARIANTS {
         'docker://mskcc/remove-variants:0.1.1':
         'docker.io/mskcc/remove-variants:0.1.1' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta),  path(inputMaf)
 

@@ -14,6 +14,8 @@ process VCF2MAF {
         'docker://mskcc/vcf2maf:1.6.17':
         'docker.io/mskcc/vcf2maf:1.6.17' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta),  path(inputVcf)
     tuple val(meta2), path(fasta)

@@ -8,11 +8,13 @@ process BCFTOOLS_ANNOTATE {
         'docker://mskcc/htslib:1.9':
         'docker.io/mskcc/htslib:1.9' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.vcf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(inputVcf), path(inputVcfTbi), path(annotateVcf), path(annotateVcfTbis)
 
     output:
-    tuple val(meta), path("*.vcf")  , emit: vcf
+    tuple val(meta), path("*.vcf")     , emit: vcf
     path "versions.yml"                , emit: versions
 
     script:

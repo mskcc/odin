@@ -8,6 +8,9 @@ process FILLOUT {
         'docker://mskcc/roslin-variant-cmo-utils:1.9.15':
         'docker.io/mskcc/roslin-variant-cmo-utils:1.9.15' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.fillout", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta),   path(inputMaf), path(bams), path(bais)
     tuple val(meta3),  path(fasta)

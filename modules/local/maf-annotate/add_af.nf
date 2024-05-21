@@ -6,7 +6,7 @@ process ANNOTATE_ADD_AF {
         'docker://mskcc/mjolnir:0.1.0':
         'docker.io/mskcc/mjolnir:0.1.0' }"
 
-    containerOptions "--bind $projectDir"
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(input_maf)
@@ -20,7 +20,7 @@ process ANNOTATE_ADD_AF {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    python3 $projectDir/bin/maf-filter/add_af.py \\
+    add_af.py \\
         ${input_maf} \\
         ${prefix}_add_af.muts.maf
 
