@@ -1,4 +1,4 @@
-#!/opt/common/CentOS_6-dev/python/python-2.7.10/bin/python
+#!/usr/bin/env python
 ##########################################################################################
 # MSKCC CMO
 descr = 'Fillout allele counts for a MAF file using GetBaseCountsMultiSample on BAMs'
