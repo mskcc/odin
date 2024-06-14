@@ -4,6 +4,10 @@ process REMOVE_VARIANTS {
     tag "$meta.id"
     label 'process_medium'
 
+    //
+    // Dockerfile:
+    //    https://github.com/mskcc/roslin-variant/blob/2.6.x/build/containers/remove-variants/0.1.1/Dockerfile
+    //
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://mskcc/remove-variants:0.1.1':
         'docker.io/mskcc/remove-variants:0.1.1' }"
