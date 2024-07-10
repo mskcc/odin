@@ -48,9 +48,11 @@ Now, you can run the pipeline using:
 
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
+nextflow run
+
 ```bash
-nextflow run mskcc/odin \
-   -profile <docker/singularity/.../institute> \
+nextflow run main.nf \
+   -profile singularity,test_juno \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
