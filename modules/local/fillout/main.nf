@@ -38,7 +38,7 @@ process FILLOUT {
 
     """
     echo "${pair_file_contents}" > "${pair_file_name}"
-    /usr/bin/cmo_fillout \\
+    fillout.py \\
         --n_threads ${task.cpus} \\
         ${args} \\
         ${extra_args} \\
