@@ -1,5 +1,11 @@
 process REMOVE_VARIANTS {
 
+    // Repo for remove_variants.py
+    //      https://github.com/mskcc/remove-variants
+    //
+    // Location of Dockerfile:
+    //      https://github.com/mskcc/roslin-variant/blob/2.6.x/build/containers/remove-variants/0.1.1/Dockerfile
+    //
 
     tag "$meta.id"
     label 'process_medium'
