@@ -30,6 +30,7 @@ WorkflowOdin.initialise(params, log)
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { CALL_VARIANTS } from '../subworkflows/local/variant-calling/main'
 include { FIND_COVERED_INTERVALS } from '../subworkflows/local/find_covered_intervals'
 include { MAF_PROCESSING } from '../subworkflows/local/maf-processing/main'
@@ -58,16 +59,16 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 
 workflow ODIN {
 
-    take:
-    ch_bams
-
-    main:
-
     ch_versions = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
+    INPUT_CHECK (
+        file(params.input)
+    )
+
+    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
@@ -90,7 +91,7 @@ workflow ODIN {
     ch_exac_filter_index = Channel.value(["exac_filter_index", file(params.exac_filter_index)])
     intervals = params.intervals
 
-    input_files = ch_bams
+    input_files = INPUT_CHECK.out.bams
         .branch {
             no_bed: it[3] == null
             bed_provided: it[3] != null
@@ -157,14 +158,6 @@ workflow ODIN {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
-
-    emit:
-    data_mutations_extended_file = MAF_FILTER_WORKFLOW.out.data_mutations_extended_txt
-    rejected_file  = MAF_FILTER_WORKFLOW.out.rejected_maf
-    maf = MAF_ANNOTATE.out.maf
-    share_maf = MAF_ANNOTATE.out.share_maf
-    tmb = TMB_WORKFLOW.out.tmb
-    versions = ch_versions
 
 
 }
