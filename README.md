@@ -21,7 +21,7 @@
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-### Running @ MSKCC
+#### Running nextflow @ MSKCC
 
 If you are runnning this pipeline on a MSKCC cluster you need to make sure nextflow is properly configured for the HPC envirornment:
 
@@ -32,6 +32,8 @@ export PATH=$PATH:/path/to/nextflow/binary
 export SINGULARITY_TMPDIR=/path/to/network/storage/for/singularity/tmp/files
 export NXF_SINGULARITY_CACHEDIR=/path/to/network/storage/for/singularity/cache
 ```
+
+### Running the pipeline
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -47,11 +49,11 @@ Each row represents a pair of bam files and bait set.
 For optional bed file, you can either enter a bed file leave it bank and one will be generated using covered intervals.
 To leave the field blank you can use any of these options:
 
+```csv
 pair_id,tumor.bam,normal.bam,assay,normalType,None
 pair_id,tumor.bam,normal.bam,assay,normalType,null
 pair_id,tumor.bam,normal.bam,assay,normalType,
-
--->
+```
 
 Now, you can run the pipeline using:
 
