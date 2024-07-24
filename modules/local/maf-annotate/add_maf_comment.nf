@@ -6,7 +6,7 @@ process ANNOTATE_ADD_MAF_COMMENT {
         'docker://mskcc/mjolnir:0.1.0':
         'docker.io/mskcc/mjolnir:0.1.0' }"
 
-    containerOptions "--bind $projectDir"
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(input_maf)
@@ -23,7 +23,7 @@ process ANNOTATE_ADD_MAF_COMMENT {
     def comment_value = odin_version
 
     """
-    $projectDir/bin/maf-filter/concat_with_comments.sh \\
+    concat_with_comments.sh \\
         ${comment_label} \\
         ${comment_value} \\
         ${prefix}_add_maf_comment.muts.maf \\

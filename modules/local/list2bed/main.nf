@@ -8,11 +8,13 @@ process LIST2BED {
         'docker://mskcc/list2bed:1.0.1':
         'docker.io/mskcc/list2bed:1.0.1' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.bed", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(list_file)
 
     output:
-    tuple val(meta), path("*.bed")  , emit: bed_file
+    tuple val(meta), path("*.bed")     , emit: bed_file
     path "versions.yml"                , emit: versions
 
     script:

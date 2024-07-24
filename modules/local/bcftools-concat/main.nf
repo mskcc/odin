@@ -8,6 +8,8 @@ process BCFTOOLS_CONCAT {
         'docker://mskcc/htslib:1.9':
         'docker.io/mskcc/htslib:1.9' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.gz", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(inputVcfs), path(inputVcfTbis)
 

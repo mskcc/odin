@@ -8,6 +8,8 @@ process TABIX {
         'docker://mskcc/htslib:1.9':
         'docker.io/mskcc/htslib:1.9' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.tbi", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(inputVcf)
 

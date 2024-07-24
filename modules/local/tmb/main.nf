@@ -3,10 +3,10 @@ process TMB {
     label 'process_single'
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://mskcc/helix_filters_01:23.9.0':
-        'docker.io/mskcc/helix_filters_01:23.9.0' }"
+        'docker://mskcc/mjolnir:0.1.0':
+        'docker.io/mskcc/mjolnir:0.1.0' }"
 
-    containerOptions "--bind $PWD"
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.tsv", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(input_maf)
@@ -19,21 +19,20 @@ process TMB {
     task.ext.when == null || task.ext.when
     def argos_version = task.ext.argos_version ?: '1.5.0'
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def assay = "${meta.assay}".toUpperCase()
-    def genome_coverage = params.assay_coverage_info[assay]
 
     """
-    python $PWD/bin/maf-filter/calc-tmb.py \\
-        from-file \\
+    calc-tmb.py \\
+        --maf_file \\
         ${input_maf} \\
+        --output_filename \\
         ${prefix}.tmb.tsv \\
-        --genome-coverage ${genome_coverage} \\
-        --tumor-id ${meta.tumorSampleName} \\
-        --normal-id ${meta.normalSampleName}
+        --tumorId ${meta.tumorSampleName} \\
+        --assay  ${meta.assay.toUpperCase()} \\
+        --normalType ${meta.normalType.toUpperCase()}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        helix_filter_01: 21.4.1
+        odin-tmb: 1.0
     END_VERSIONS
     """
 }

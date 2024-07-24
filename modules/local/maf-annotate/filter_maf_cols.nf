@@ -6,7 +6,7 @@ process ANNOTATE_FILTER_MAF_COLS {
         'docker://mskcc/mjolnir:0.1.0':
         'docker.io/mskcc/mjolnir:0.1.0' }"
 
-    containerOptions "--bind $projectDir"
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(input_maf)
@@ -20,7 +20,7 @@ process ANNOTATE_FILTER_MAF_COLS {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    python3 $projectDir/bin/maf-filter/maf_col_filter.py \\
+    maf_col_filter.py \\
         ${input_maf} \\
         ${prefix}.muts.share.maf
 

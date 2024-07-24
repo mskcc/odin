@@ -21,8 +21,19 @@
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+#### Running nextflow @ MSKCC
+
+If you are runnning this pipeline on a MSKCC cluster you need to make sure nextflow is properly configured for the HPC envirornment:
+
+```bash
+module load java/jdk-17.0.8
+module load singularity/3.7.1
+export PATH=$PATH:/path/to/nextflow/binary
+export SINGULARITY_TMPDIR=/path/to/network/storage/for/singularity/tmp/files
+export NXF_SINGULARITY_CACHEDIR=/path/to/network/storage/for/singularity/cache
+```
+
+### Running the pipeline
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -38,19 +49,21 @@ Each row represents a pair of bam files and bait set.
 For optional bed file, you can either enter a bed file leave it bank and one will be generated using covered intervals.
 To leave the field blank you can use any of these options:
 
+```csv
 pair_id,tumor.bam,normal.bam,assay,normalType,None
 pair_id,tumor.bam,normal.bam,assay,normalType,null
 pair_id,tumor.bam,normal.bam,assay,normalType,
-
--->
+```
 
 Now, you can run the pipeline using:
 
 <!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
+nextflow run
+
 ```bash
-nextflow run mskcc/odin \
-   -profile <docker/singularity/.../institute> \
+nextflow run main.nf \
+   -profile singularity,test_juno \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```

@@ -7,6 +7,8 @@ process NGS_FILTERS {
         'docker://mskcc/roslin-variant-ngs-filters:1.4':
         'docker.io/mskcc/roslin-variant-ngs-filters:1.4' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta),  path(inputMaf)
     tuple val(meta2),  path(normalPanelMaf)

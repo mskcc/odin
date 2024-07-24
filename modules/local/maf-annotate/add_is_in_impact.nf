@@ -6,7 +6,7 @@ process ANNOTATE_ADD_IS_IN_IMPACT {
         'docker://mskcc/mjolnir:0.1.0':
         'docker.io/mskcc/mjolnir:0.1.0' }"
 
-    containerOptions "--bind $projectDir"
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(input_maf)
@@ -21,7 +21,7 @@ process ANNOTATE_ADD_IS_IN_IMPACT {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    python3 $projectDir/bin/maf-filter/add_is_in_impact.py \\
+    add_is_in_impact.py \\
         --input_file ${input_maf} \\
         --output_file ${prefix}.muts.maf \\
         --IMPACT_file ${impact_gene_list}

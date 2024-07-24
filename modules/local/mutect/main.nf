@@ -6,15 +6,17 @@ process MUTECT {
         'docker://mskcc/roslin-variant-mutect:1.1.4':
         'docker.io/mskcc/roslin-variant-mutect:1.1.4' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.vcf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(input), path(input_index), path(intervals)
     tuple val(meta2), path(fasta)
     tuple val(meta3), path(fai)
     tuple val(meta4), path(dbsnp)
     tuple val(meta5), path(cosmic)
-    
+
     output:
-    tuple val(meta), path("*.vcf")     , emit: vcf 
+    tuple val(meta), path("*.vcf")     , emit: vcf
     tuple val(meta), path("*.txt")     , emit: stats
     path "versions.yml"                , emit: versions
 

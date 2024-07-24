@@ -7,6 +7,8 @@ process VARDICTJAVA {
         'docker://mskcc/roslin-variant-vardict:1.5.1':
         'docker.io/mskcc/roslin-variant-vardict:1.5.1' }"
 
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.vcf", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(bams), path(bais), path(bed)
     tuple val(meta2), path(fasta)

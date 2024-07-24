@@ -6,7 +6,8 @@ process MAF_FILTER {
         'docker://mskcc/mjolnir:0.1.0':
         'docker.io/mskcc/mjolnir:0.1.0' }"
 
-    containerOptions "--bind $projectDir"
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.maf", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/${meta.id}/", pattern: "*.txt", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(input_maf)
@@ -28,7 +29,7 @@ process MAF_FILTER {
         is_impact = "--is-impact"
     )
     """
-    python3 $projectDir/bin/maf-filter/maf_filter.py \\
+    maf_filter.py \\
         ${input_maf} \\
         --keep-rejects \\
         --rejected-file ${prefix}.rejected.muts.maf \\
