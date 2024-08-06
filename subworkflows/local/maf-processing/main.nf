@@ -69,7 +69,7 @@ workflow MAF_PROCESSING {
 
     emit:
     maf = NGS_FILTERS.out.maf
-    portal_fillout = NGS_FILTERS.out.maf
+    portal_fillout = fillout_tumor_normal.out.fillout
     versions = ch_versions
 
 }
