@@ -33,7 +33,7 @@ def main():
     """
     Script to calculate TMB (tumor mutational burden) value
     """
-    default_assay_db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),'data/tmbAssayDb.json')
+    default_assay_db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),'tmbAssayDb.json')
     parser = argparse.ArgumentParser(description='Script to calculate TMB (tumor mutational burden) value')
     parser.add_argument("--maf_file",         required=True, dest = 'maf_file',         help="Input maf file")
     parser.add_argument("--output_filename",  required=False,dest = 'output_filename',  help="output_filename")
