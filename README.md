@@ -50,7 +50,7 @@ For optional bed file, you can either enter a bed file leave it bank and one wil
 To leave the field blank you can use any of these options:
 
 ```csv
-pair_id,tumor.bam,normal.bam,assay,normalType,None
+pair_id,tumor.bam,normal.bam,assay,normalType,NONE
 pair_id,tumor.bam,normal.bam,assay,normalType,null
 pair_id,tumor.bam,normal.bam,assay,normalType,
 ```
