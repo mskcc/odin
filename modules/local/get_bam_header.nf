@@ -24,7 +24,7 @@ process SAMTOOLS_HEADER_VIEW {
     """
     /usr/local/bin/samtools \\
         ${args} \\
-        ${bam} | grep -o '${args2}' | sed '${args3}'
+        ${bam} | grep -m 1 -o '${args2}' | sed '${args3}'
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
