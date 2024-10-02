@@ -73,7 +73,7 @@ workflow CALL_VARIANTS {
 
 
 
-    all_vcf_files = join_vcf_files(BASICFILTERING_MUTECT.out.vcf,BASICFILTERING_VARDICT.out.vcf,BASICFILTERING_MUTECT.out.vcf_index, BASICFILTERING_VARDICT.out.vcf_index)
+    all_vcf_files = join_vcf_files(BASICFILTERING_VARDICT.out.vcf,BASICFILTERING_MUTECT.out.vcf,BASICFILTERING_VARDICT.out.vcf_index, BASICFILTERING_MUTECT.out.vcf_index)
 
 
     BCFTOOLS_CONCAT (
